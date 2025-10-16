@@ -137,6 +137,12 @@ public class SlotBehaviour : MonoBehaviour
     private float SpinDelay = 0.2f;
     private Sprite turboOriginalSprite;
     private Tween ScoreTween;
+    private int[,] initialMatrix = new int[,]
+    {
+        {11, 7, 9, 9, 11 },
+        {10, 10, 10, 10, 9},
+        {8, 11, 11, 11, 8} 
+    };
 
     [SerializeField]
     private int IconSizeFactor = 100;       //set this parameter according to the size of the icon and spacing
@@ -386,14 +392,35 @@ public class SlotBehaviour : MonoBehaviour
     //}
 
     #region InitialFunctions
-    internal void shuffleInitialMatrix()
+    // internal void shuffleInitialMatrix()
+    // {
+    //     for (int i = 0; i < Tempimages.Count; i++)
+    //     {
+    //         for (int j = 0; j < 3; j++)
+    //         {
+    //             int randomIndex = UnityEngine.Random.Range(0, myImages.Length);
+    //             Tempimages[i].slotImages[j].sprite = myImages[randomIndex];
+    //         }
+    //     }
+    // }
+    internal void InitializeMatrix()
     {
-        for (int i = 0; i < Tempimages.Count; i++)
+        for (int row = 0; row < initialMatrix.GetLength(0); row++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int col = 0; col < initialMatrix.GetLength(1); col++)
             {
-                int randomIndex = UnityEngine.Random.Range(0, myImages.Length);
-                Tempimages[i].slotImages[j].sprite = myImages[randomIndex];
+                int val = initialMatrix[row, col];
+
+                Tempimages[col].slotImages[row].sprite = myImages[val];
+
+                ImageAnimation animScript = Tempimages[col].slotImages[row].GetComponent<ImageAnimation>();
+                if (animScript != null)
+                {
+                    PopulateAnimationSprites(animScript, val);
+
+                    animScript.StartAnimation();
+                    TempList.Add(animScript);
+                }
             }
         }
     }

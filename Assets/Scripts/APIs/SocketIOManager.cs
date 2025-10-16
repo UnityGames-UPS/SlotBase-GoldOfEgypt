@@ -493,7 +493,8 @@ public class SocketIOManager : MonoBehaviour
     private void PopulateSlotSocket(List<string> LineIds)
     {
         uiManager.RaycastBlocker.SetActive(false);
-        slotManager.shuffleInitialMatrix();
+        // slotManager.shuffleInitialMatrix();
+        slotManager.InitializeMatrix();
         for (int i = 0; i < LineIds.Count; i++)
         {
             slotManager.FetchLines(LineIds[i], i);
