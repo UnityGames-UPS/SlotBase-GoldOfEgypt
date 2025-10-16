@@ -1,2 +1,2 @@
 # SlotBase-GoldOfEgypt
-Dev
+Prod
