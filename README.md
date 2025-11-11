@@ -1,2 +1,2 @@
-# SlotBase-GoldOfEgypt
+# GoldOfEgypt
 Dev Build 
