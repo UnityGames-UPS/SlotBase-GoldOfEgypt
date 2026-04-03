@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "SlotBase-GoldOfEgypt.sln"
+    "dotnet.defaultSolution": "SlotBase-GoldOfEgypt.slnx"
 }
