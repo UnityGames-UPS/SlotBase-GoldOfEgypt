@@ -1,2 +1,0 @@
-# SlotBase-GoldOfEgypt
-Dev
