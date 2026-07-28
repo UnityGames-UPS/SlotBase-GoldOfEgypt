@@ -1,66 +1,13 @@
 mergeInto(LibraryManager.library, {
-    SendLogToReactNative: function (messagePtr) {
-        var message = UTF8ToString(messagePtr);
-        // console.log('jslib fun : ' + message);
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(message);
-        } 
-    },
-
-    SendPostMessage: function(messagePtr) 
+    // Outbound: Unity -> iframe host, as { type, data } via window.parent.postMessage.
+    SendPostMessage: function(messagePtr)
     {
       var message = UTF8ToString(messagePtr);
-      console.log('SendReactPostMessage, message sent: ' + message);
-      if(window.ReactNativeWebView)
-      {
-        if(message == "authToken"){
-          var injectedObjectJson = window.ReactNativeWebView.injectedObjectJson();
-          var injectedObj = JSON.parse(injectedObjectJson);
-
-          window.ReactNativeWebView.postMessage('Injected obj : ' + injectedObjectJson);
-          
-          var combinedData = JSON.stringify({
-              socketURL: injectedObj.socketURL.trim(),
-              cookie: injectedObj.token.trim(),
-              nameSpace: injectedObj.nameSpace ? injectedObj.nameSpace.trim() : ""
-          });
-
-          if (typeof SendMessage === 'function') {
-            SendMessage('SocketManager', 'ReceiveAuthToken', combinedData);
-          }
-        }
-        window.ReactNativeWebView.postMessage(message);
-      }
-      else if (typeof window !== "undefined" && window.parent) {
-        if (typeof window.parent.postMessage === "function"){
-          console.log("Calling window.parent.postMessage");
-          window.parent.postMessage({ 
-            type: message,
-            data: { }
-          }, "*");
-        }
-      }
-      else if(window.parent)
-      {
-        if(message == "authToken")
-        {
-          window.addEventListener('message', function(event){
-            if(event.data.type === 'authToken'){
-              var combinedData = JSON.stringify({
-                  cookie: event.data.cookie,
-                  socketURL: event.data.socketURL,
-                  nameSpace: event.data && event.data.nameSpace ? event.data.nameSpace : ''
-              }); 
-
-              if (typeof SendMessage === 'function') {
-                SendMessage('SocketManager', 'ReceiveAuthToken', combinedData);
-              }
-              else{
-                console.log('SendMessage is not a func');
-              }
-            }
-          });
-        }
+      if (typeof window !== "undefined" && window.parent && typeof window.parent.postMessage === "function") {
+        window.parent.postMessage({
+          type: message,
+          data: { }
+        }, "*");
       }
     },
 
@@ -111,5 +58,63 @@ mergeInto(LibraryManager.library, {
       document.addEventListener('webkitvisibilitychange', window._unityVisibilityCallback);
       window.addEventListener('blur',  window._unityWindowBlurCallback);
       window.addEventListener('focus', window._unityWindowFocusCallback);
+    },
+
+    // Self-contained resize bridge: the Unity page listens to its own viewport and pushes
+    // "width,height" into Unity (OC.SwitchDisplay) — no dependency on the iframe host.
+    // No debounce: SwitchDisplay's RotationCoroutine (StopCoroutine + WaitForSecondsRealtime)
+    // already coalesces rapid calls.
+    RegisterResizeListener: function (gameObjectNamePtr, methodNamePtr) {
+      var gameObjectName = UTF8ToString(gameObjectNamePtr);
+      var methodName = UTF8ToString(methodNamePtr);
+
+      function sendDimensionsToUnity() {
+        try {
+          // visualViewport is the accurate visible area on iOS; fall back to innerWidth/Height.
+          var vv = window.visualViewport;
+          var w = Math.round(vv ? vv.width : window.innerWidth);
+          var h = Math.round(vv ? vv.height : window.innerHeight);
+          var dimensions = w + ',' + h;
+          if (typeof SendMessage === 'function') {
+            SendMessage(gameObjectName, methodName, dimensions);
+          } else if (typeof unityInstance !== 'undefined' && unityInstance && unityInstance.SendMessage) {
+            unityInstance.SendMessage(gameObjectName, methodName, dimensions);
+          }
+        } catch (err) {
+          console.error('[JS] resize send failed:', err);
+        }
+      }
+
+      if (window._unityResizeCallback) {
+        window.removeEventListener('resize', window._unityResizeCallback);
+        window.removeEventListener('orientationchange', window._unityResizeCallback);
+        if (window.visualViewport) window.visualViewport.removeEventListener('resize', window._unityResizeCallback);
+      }
+      window._unityResizeCallback = sendDimensionsToUnity;
+      window.addEventListener('resize', window._unityResizeCallback);
+      window.addEventListener('orientationchange', window._unityResizeCallback);
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', window._unityResizeCallback);
+
+      sendDimensionsToUnity();   // initial sync
+    },
+
+    // Inbound auth: host posts { type:"TokenReceived", data:{cookie,socketURL,nameSpace} } -> Unity.
+    RegisterTokenListener: function (gameObjectNamePtr, methodNamePtr) {
+      var gameObjectName = UTF8ToString(gameObjectNamePtr);
+      var methodName = UTF8ToString(methodNamePtr);
+
+      if (window._unityTokenCallback) {
+        window.removeEventListener('message', window._unityTokenCallback);
+      }
+      window._unityTokenCallback = function (event) {
+        if (!event.data || event.data.type !== 'TokenReceived') return;
+        var json = JSON.stringify(event.data.data);
+        if (typeof SendMessage === 'function') {
+          SendMessage(gameObjectName, methodName, json);
+        } else if (typeof unityInstance !== 'undefined' && unityInstance && unityInstance.SendMessage) {
+          unityInstance.SendMessage(gameObjectName, methodName, json);
+        }
+      };
+      window.addEventListener('message', window._unityTokenCallback);
     }
 });
