@@ -193,6 +193,9 @@ public class UIManager : MonoBehaviour
     private SocketIOManager socketManager;
     [SerializeField] internal GameObject RaycastBlocker;
 
+    [SerializeField]
+    private JSFunctCalls jsFunctCalls;
+
 
     private bool isMusic = true;
     private bool isSound = true;
@@ -206,6 +209,16 @@ public class UIManager : MonoBehaviour
     {
         //if (Loading_Object) Loading_Object.SetActive(true);
         //StartCoroutine(LoadingRoutine());
+
+        if (jsFunctCalls != null)
+            jsFunctCalls.RegisterVisibilityListener(gameObject.name);
+    }
+
+    public void OnFocusChanged(string value)
+    {
+        bool focused = value == "1";
+        if (audioController) audioController.SetMuteAll(focused ? !isSound : true);
+        if (socketManager) socketManager.HandleFocusChange(focused);
     }
 
     private IEnumerator LoadingRoutine()
