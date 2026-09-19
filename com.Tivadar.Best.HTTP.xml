@@ -1256,6 +1256,14 @@
              <param name="offset">the offset within that data array to find the first byte to write.</param>
              <param name="count">the number of bytes to write.</param>
         </member>
+        <member name="M:Best.HTTP.Shared.Compression.Zlib.ZTree.DistanceCode(System.Int32)">
+            <summary>
+            Map from a distance to a distance code.
+            </summary>
+            <remarks> 
+            No side effects. _dist_code[256] and _dist_code[257] are never used.
+            </remarks>
+        </member>
         <member name="T:Best.HTTP.Shared.Compression.Zlib.FlushType">
             <summary>
             Describes how to flush the current deflate operation.
@@ -2001,14 +2009,6 @@
             <summary>
             The minimum size of the working buffer used in the ZlibCodec class.  Currently it is 128 bytes.
             </summary>
-        </member>
-        <member name="M:Best.HTTP.Shared.Compression.Zlib.ZTree.DistanceCode(System.Int32)">
-            <summary>
-            Map from a distance to a distance code.
-            </summary>
-            <remarks> 
-            No side effects. _dist_code[256] and _dist_code[257] are never used.
-            </remarks>
         </member>
         <member name="M:Best.HTTP.Shared.Databases.Database`4.FromFirstMetadataIndex(System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
@@ -3881,610 +3881,6 @@
             Find and return a Cookie and his index in the list.
             </summary>
         </member>
-        <member name="T:Best.HTTP.Hosts.Connections.ConnectionBase">
-            <summary>
-            Abstract base class for concrete connection implementation (HTTP/1, HTTP/2, WebGL, File).
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.HostKey">
-            <summary>
-            The address of the server that this connection is bound to.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.State">
-            <summary>
-            The state of this connection.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.CurrentRequest">
-            <summary>
-            If the State is HTTPConnectionStates.Processing, then it holds a HTTPRequest instance. Otherwise it's null.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.KeepAliveTime">
-            <summary>
-            How much the connection kept alive after its last request processing.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.AssignedRequests">
-            <summary>
-            Number of assigned requests to process.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.MaxAssignedRequests">
-            <summary>
-            Maximum number of assignable requests.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.StartTime">
-            <summary>
-            When we start to process the current request. It's set after the connection is established.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Connections.ConnectionBase.Shutdown(Best.HTTP.Shared.ShutdownTypes)">
-            <summary>
-            Called when the plugin shuts down immediately.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Connections.KeepAliveHeader">
-            <summary>
-            https://tools.ietf.org/html/draft-thomson-hybi-http-timeout-03
-            Test servers: http://tools.ietf.org/ http://nginx.org/
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.KeepAliveHeader.TimeOut">
-            <summary>
-            A host sets the value of the "timeout" parameter to the time that the host will allow an idle connection to remain open before it is closed. A connection is idle if no data is sent or received by a host.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.KeepAliveHeader.MaxRequests">
-            <summary>
-            The "max" parameter has been used to indicate the maximum number of requests that would be made on the connection.This parameter is deprecated.Any limit on requests can be enforced by sending "Connection: close" and closing the connection.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Connections.ConnectionHelper">
-            <summary>
-            Static helper class to handle cases where the plugin has to do additional logic based on the received response. These are like connection management, handling redirections, loading from local cache, authentication challanges, etc.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Connections.ConnectionHelper.HandleResponse(Best.HTTP.HTTPRequest,System.Boolean@,Best.HTTP.Hosts.Connections.HTTPConnectionStates@,Best.HTTP.Hosts.Connections.KeepAliveHeader@,Best.HTTP.Shared.Logger.LoggingContext)">
-            <summary>
-            Called when the whole response received
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Connections.HTTP1.PeekableHTTP1Response">
-            <summary>
-            An HTTP 1.1 response implementation that can utilize a peekable stream.
-            Its main entry point is the ProcessPeekable method that should be called after every chunk of data downloaded.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Connections.HTTPConnectionStates">
-            <summary>
-            Possible states of a Http Connection.
-            The ideal lifecycle of a connection that has KeepAlive is the following: Initial => [Processing => WaitForRecycle => Free] => Closed.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Initial">
-            <summary>
-            This Connection instance is just created.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Processing">
-            <summary>
-            This Connection is processing a request
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.WaitForProtocolShutdown">
-            <summary>
-            Wait for the upgraded protocol to shut down.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Recycle">
-            <summary>
-            The Connection is finished processing the request, it's waiting now to deliver it's result.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Free">
-            <summary>
-            The request result's delivered, it's now up to processing again.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Closed">
-            <summary>
-            If it's not a KeepAlive connection, or something happened, then we close this connection and remove from the pool.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.ClosedResendRequest">
-            <summary>
-            Same as the Closed state, but processing this request requires resending the last processed request too.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Connections.IDownloadContentBufferAvailable">
-            <summary>
-            Defines an interface for notifying connections when space becomes available in a buffer for downloading data.
-            Connections implementating of this interface are used to signal their internal logic that they can transfer data into the available buffer space.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Connections.IDownloadContentBufferAvailable.BufferAvailable(Best.HTTP.Response.DownloadContentStream)">
-            <summary>
-            Notifies a connection that space has become available in the buffer for downloading data.
-            When invoked, this method indicates to a connection that it can transfer additional data into the buffer for further processing.
-            </summary>
-            <param name="stream">The <see cref="T:Best.HTTP.Response.DownloadContentStream"/> instance associated with the buffer.</param>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Connections.IThreadSignaler">
-            <summary>
-            Interface for signaling upload threads.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.Hosts.Connections.IThreadSignaler.Context">
-            <summary>
-            A <see cref="T:Best.HTTP.Shared.Logger.LoggingContext"/> instance for debugging purposes.
-            </summary>
-            <remarks>
-            To help <see cref="T:Best.HTTP.Request.Upload.UploadStreamBase"/> implementors log in the IThreadSignaler's context,
-            the interface implementors must make their logging context accessible.
-            </remarks>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Connections.IThreadSignaler.SignalThread">
-            <summary>
-            Signals the associated thread to resume or wake up.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Connections.WebGL.WebGLXHRNativeInterface.XHR_SetTimeout(System.Int32,System.UInt32)">
-            <summary>
-            Is an unsigned long representing the number of milliseconds a request can take before automatically being terminated. A value of 0 (which is the default) means there is no timeout.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Settings.AsteriskStringComparer">
-            <summary>
-            Moves any added asterisk(*) to the end of the list.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Settings.HTTRequestSettings">
-            <summary>
-            Settings for HTTP requests.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HTTRequestSettings.ConnectTimeout">
-            <summary>
-            The timeout for establishing a connection.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HTTRequestSettings.RequestTimeout">
-            <summary>
-            The maximum time allowed for the request to complete.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings">
-            <summary>
-            Settings for HTTP/1 connections.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings.TryToReuseConnections">
-            <summary>
-            Indicates whether the connection should be open after receiving the response.
-            </summary>
-            <remarks>
-            If set to <c>true</c>, internal TCP connections will be reused whenever possible.
-            If making rare requests to the server, it's recommended to change this to <c>false</c>.
-            </remarks>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings.MaxConnectionIdleTime">
-            <summary>
-            The maximum time a connection can remain idle before being closed.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings.ForceUseThreadPool">
-            <summary>
-            Indicates whether the upload thread should use a <see href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool">ThreadPool</see> thread instead of creating and using a <see href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread">Thread</see>.
-            </summary>
-            <remarks>The plugin tries to use ThreadPool threads for known short-living uploads like requests without upload body. With <c>ForceUseThreadPool</c> all HTTP/1 requests, including long uploads or downloads can be forced to use ThreadPool threads.</remarks>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Settings.HostVariantSettings">
-            <summary>
-            Settings for <see cref="T:Best.HTTP.HostSetting.HostVariant"/>s.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.MaxConnectionPerVariant">
-            <summary>
-            The maximum number of connections allowed per host variant.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.MaxAssignedRequestsFactor">
-            <summary>
-            Factor used when calculations are made whether to open a new connection to the server or not.
-            </summary>
-            <remarks>
-            It has an effect on HTTP/2 connections only.
-            <para>Higher values (gte <c>1.0f</c>) delay, lower values (lte <c>1.0f</c>) bring forward creation of new connections.</para>
-            </remarks>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.VariantFactory">
-            <summary>
-            Factory function to generate HostVariant or descendent instances.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.ConnectionFactory">
-            <summary>
-            Factory function to generate custom connection implementations.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Settings.LowLevelConnectionSettings">
-            <summary>
-            Represents the low-level TCP buffer settings for connections.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.LowLevelConnectionSettings.TCPWriteBufferSize">
-            <summary>
-            Gets or sets the size of the TCP write buffer in bytes. 
-            </summary>
-            <remarks>
-            <para>Default value is 1 MiB.</para>
-            <para>This determines the maximum amount of data that that the <see cref="!:TCPStreamer"/> class can buffer up if it's already in a write operation.
-            Increasing this value can potentially improve write performance, especially for large messages or data streams. 
-            However, setting it too high might consume a significant amount of memory, especially if there are many active connections.
-            </para>
-            </remarks>
-            <value>The size of the TCP write buffer in bytes.</value>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.LowLevelConnectionSettings.ReadBufferSize">
-            <summary>
-            Gets or sets the size of the read buffer in bytes. 
-            </summary>
-            <value>The size of the read buffer in bytes.</value>
-            <remarks>
-            <para>Default value is 1 MiB.</para>
-            <para>This determines the maximum amount of data that low level streams and the <see cref="!:TCPStreamer"/> can buffer up for consuming by higher level layers.
-            Adjusting this value can affect the read performance of the application. 
-            Like the write buffer, setting this too high might be memory-intensive, especially with many connections. 
-            It's advised to find a balance that suits the application's needs and resources.
-            </para>
-            </remarks>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Settings.HostSettings">
-            <summary>
-            Contains settings that can be associated with a specific host or host variant.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.LowLevelConnectionSettings">
-            <summary>
-            Gets or sets the low-level TCP buffer settings for connections associated with the host or host variant.
-            </summary>
-            <value>The low-level TCP buffer settings.</value>
-            <remarks>
-            These settings determine the buffer sizes for reading from and writing to TCP connections, 
-            which can impact performance and memory usage.
-            </remarks>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.RequestSettings">
-            <summary>
-            Settings related to HTTP requests made to this host or host variant.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.HTTP1ConnectionSettings">
-            <summary>
-            Settings related to HTTP/1.x connection behavior.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.HostVariantSettings">
-            <summary>
-            Settings related to <see cref="T:Best.HTTP.HostSetting.HostVariant"/> behavior.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.Hosts.Settings.HostSettingsManager">
-            Host Settings Hierarchy for the following hosts, settings are stored as leafs:
-            
-            *.com
-            *.example.com
-            example.com
-            
-            '*' matches one or more subdomains so *.example.com 
-             - matches a.example.com and a.b.example.com
-             - but doesn't match example.com!
-            
-                                         
-                                          
-                               [com]                 [localhost]                [org]                      [*]
-                          +------+------+                 |                       |                         |
-                          |             |              [setting]                 [*]                     [setting]
-                    [example]          [*]                                        |
-                    /       \           |                                      [setting]
-                  [b]     [setting]  [setting]
-                   |
-                  [a]
-                   |
-                [setting]
-            
-            <summary>
-            Manages host-specific settings for HTTP requests based on hostnames.
-            The HostSettingsManager is a powerful tool for fine-tuning HTTP request and connection behaviors
-            on a per-host basis. It enables you to define custom settings for specific hostnames 
-            while maintaining default settings for all other hosts. This level of granularity allows you to
-            optimize and customize HTTP requests for different endpoints within your application.
-            </summary>
-            <remarks>
-            When host-specific settings are not found for a given host variant, the default <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/>
-            associated with the "*" host will be returned.
-            </remarks>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Best.HTTP.Hosts.Settings.HostSettingsManager"/> class with default settings for all hosts ("*").
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.AddDefault(System.Uri)">
-            <summary>
-            Adds default settings for the host part of the specified URI. This is equivalent to calling <see cref="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.Uri,Best.HTTP.Hosts.Settings.HostSettings)"/> with the a new <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/>.
-            </summary>
-            <param name="uri">The URI for which default settings should be applied. Only the host part of the URI will be used.</param>
-            <returns>A <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> instance with default values.</returns>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.AddDefault(System.String)">
-            <summary>
-            Adds default settings for the the specified host name. This is equivalent to calling <see cref="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.String,Best.HTTP.Hosts.Settings.HostSettings)"/> with the a new <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/>.
-            </summary>
-            <param name="hostname">The hostname for which default settings should be applied.</param>
-            <returns>A <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> instance with default values.</returns>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.Uri,Best.HTTP.Hosts.Settings.HostSettings)">
-            <summary>
-            Adds host-specific settings for the host part of the specified URI.
-            </summary>
-            <param name="uri">The URI for which settings should be applied. Only the host part of the URI will be used.</param>
-            <param name="settings">The <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> to apply.</param>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.String,Best.HTTP.Hosts.Settings.HostSettings)">
-            <summary>
-            Adds host-specific settings for the specified hostname.
-            </summary>
-            <param name="hostname">The hostname for which settings should be applied.</param>
-            <param name="settings">The <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> to apply.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when either the hostname or settings is null.</exception>
-            <exception cref="T:System.FormatException">Thrown when the hostname contains more than one asterisk ('*').</exception>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(Best.HTTP.HostSetting.HostVariant,System.Boolean)">
-            <summary>
-            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified <see cref="T:Best.HTTP.HostSetting.HostVariant"/>. Returns the default settings associated with "*" when not found.
-            </summary>
-            <param name="variant">The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for which settings should be retrieved. Only the host part of the variant will be used.</param>
-            <returns>The host settings for the specified host variant or the default settings for "*" if not found.</returns>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(Best.HTTP.HostSetting.HostKey,System.Boolean)">
-            <summary>
-            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified <see cref="T:Best.HTTP.HostSetting.HostKey"/>. Returns the default settings associated with "*" when not found.
-            </summary>
-            <param name="hostKey">The <see cref="T:Best.HTTP.HostSetting.HostKey"/> for which settings should be retrieved. Only the host part of the host key will be used.</param>
-            <returns>The host settings for the specified host key or the default settings for "*" if not found.</returns>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(System.Uri,System.Boolean)">
-            <summary>
-            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified <see cref="T:System.Uri"/>. Returns the default settings associated with "*" when not found.
-            </summary>
-            <param name="uri">The <see cref="T:System.Uri"/> for which settings should be retrieved. Only the host part of the URI will be used.</param>
-            <returns>The host settings for the specified URI or the default settings for "*" if not found.</returns>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(System.String,System.Boolean)">
-            <summary>
-            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified hostname. Returns the default settings associated with "*" when not found.
-            </summary>
-            <param name="hostname">The hostname for which settings should be retrieved. Only the host part of the hostname will be used.</param>
-            <returns>The host settings for the specified hostname or the default settings for "*" if not found.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when the hostname is null.</exception>
-        </member>
-        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Clear">
-            <summary>
-            Clears all host-specific settings and resetting the default ("*") with default values.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.HostSetting.HostKey">
-            <summary>
-            The <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct represents a unique key for identifying hosts based on their <see cref="T:System.Uri"/> and <see cref="T:Best.HTTP.Request.Settings.ProxySettings"/>.
-            </summary>
-            <remarks>
-            <para>
-            The <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct is designed to uniquely identify a host based on its URI (Uniform Resource Identifier) and optional proxy settings.
-            It provides a way to create, compare, and hash host keys, enabling efficient host variant management in the <see cref="T:Best.HTTP.HostSetting.HostManager"/>.
-            </para>
-            <para>
-            Key features of the <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct include:
-            </para>
-            <list type="bullet">
-                <item>
-                    <term>Uniqueness</term>
-                    <description>
-                    Each <see cref="T:Best.HTTP.HostSetting.HostKey"/> is guaranteed to be unique for a specific host, considering both the URI and proxy settings.
-                    </description>
-                </item>
-                <item>
-                    <term>Hashing</term>
-                    <description>
-                    The struct provides a method to calculate a hash code for a <see cref="T:Best.HTTP.HostSetting.HostKey"/>, making it suitable for use as a dictionary key.
-                    </description>
-                </item>
-                <item>
-                    <term>Creation</term>
-                    <description>
-                    You can create a <see cref="T:Best.HTTP.HostSetting.HostKey"/> instance from a <see cref="T:System.Uri"/> and optional <see cref="T:Best.HTTP.Request.Settings.ProxySettings"/>.
-                    </description>
-                </item>
-            </list>
-            <para>
-            Usage of the <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct is typically handled internally by the BestHTTP library to manage unique hosts and optimize resource usage.
-            Developers can use it when dealing with host-specific operations or customization of the library's behavior.
-            </para>
-            </remarks>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostKey.Uri">
-            <summary>
-            Gets the URI (Uniform Resource Identifier) associated with the host.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostKey.Proxy">
-            <summary>
-            Gets the proxy settings associated with the host.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostKey.Key">
-            <summary>
-            Gets the unique hash key for the host.
-            </summary>
-        </member>
-        <member name="P:Best.HTTP.HostSetting.HostKey.Host">
-            <summary>
-            Gets the host name from the URI or "file" if the URI is a file URI.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostKey.#ctor(System.Uri,Best.HTTP.Request.Settings.ProxySettings)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct with the specified URI and proxy settings.
-            </summary>
-            <param name="uri">The URI of the host.</param>
-            <param name="proxy">The proxy settings associated with the host, or <c>null</c> if no proxy is used.</param>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostKey.From(Best.HTTP.HTTPRequest)">
-            <summary>
-            Creates a <see cref="T:Best.HTTP.HostSetting.HostKey"/> instance from an HTTP request.
-            </summary>
-            <param name="request">The HTTP request from which to extract the current URI and proxy settings.</param>
-            <returns>A <see cref="T:Best.HTTP.HostSetting.HostKey"/> representing the host of the HTTP request.</returns>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostKey.From(System.Uri,Best.HTTP.Request.Settings.ProxySettings)">
-            <summary>
-            Creates a <see cref="T:Best.HTTP.HostSetting.HostKey"/> instance from a URI and proxy settings.
-            </summary>
-            <param name="uri">The URI of the host.</param>
-            <param name="proxy">The proxy settings associated with the host, or <c>null</c> if no proxy is used.</param>
-            <returns>A <see cref="T:Best.HTTP.HostSetting.HostKey"/> representing the host with the given URI and proxy settings.</returns>
-        </member>
-        <member name="T:Best.HTTP.HostSetting.HostManager">
-            <summary>
-            The <see cref="T:Best.HTTP.HostSetting.HostManager"/> class provides centralized management for <see cref="T:Best.HTTP.HostSetting.HostVariant"/> objects associated with HTTP requests and connections.
-            </summary>
-            <remarks>
-            <para>
-            The <see cref="T:Best.HTTP.HostSetting.HostManager"/> class acts as a central registry for managing <see cref="T:Best.HTTP.HostSetting.HostVariant"/> objects, each associated with a unique <see cref="T:Best.HTTP.HostSetting.HostKey"/>.
-            It facilitates the creation, retrieval, and management of <see cref="T:Best.HTTP.HostSetting.HostVariant"/> instances based on HTTP requests and connections.
-            </para>
-            <para>
-            A <see cref="T:Best.HTTP.HostSetting.HostVariant"/> represents a specific host and port combination (e.g., "http://example.com:80" or "https://example.com:443") and
-            manages the connections and request queues for that host. The class ensures that a single <see cref="T:Best.HTTP.HostSetting.HostVariant"/> instance is used for
-            each unique host, helping optimize resource usage and connection pooling.
-            </para>
-            <para>
-            Key features of the <see cref="T:Best.HTTP.HostSetting.HostManager"/> class include:
-            </para>
-            <list type="bullet">
-                <item>
-                    <term>Creation and Retrieval</term>
-                    <description>
-                    The class allows you to create and retrieve <see cref="T:Best.HTTP.HostSetting.HostVariant"/> instances based on HTTP requests, connections, or <see cref="T:Best.HTTP.HostSetting.HostKey"/>.
-                    It ensures that a single <see cref="T:Best.HTTP.HostSetting.HostVariant"/> is used for each unique host.
-                    </description>
-                </item>
-                <item>
-                    <term>Queue Management</term>
-                    <description>
-                    The <see cref="T:Best.HTTP.HostSetting.HostManager"/> manages the queue of pending requests for each <see cref="T:Best.HTTP.HostSetting.HostVariant"/>, ensuring efficient request processing.
-                    </description>
-                </item>
-                <item>
-                    <term>Connection Management</term>
-                    <description>
-                    The class handles the management of connections associated with <see cref="T:Best.HTTP.HostSetting.HostVariant"/> objects, including recycling idle connections,
-                    removing idle connections, and shutting down connections when needed.
-                    </description>
-                </item>
-            </list>
-            <para>
-            Usage of the <see cref="T:Best.HTTP.HostSetting.HostManager"/> class is typically transparent to developers and is handled internally by the Best HTTP library. However,
-            it provides a convenient and efficient way to manage connections and requests when needed.
-            </para>
-            </remarks>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostManager.hosts">
-            <summary>
-            Dictionary to store <see cref="T:Best.HTTP.HostSetting.HostKey"/>-<see cref="T:Best.HTTP.HostSetting.HostVariant"/> mappings.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostManager.GetHostVariant(Best.HTTP.HTTPRequest)">
-            <summary>
-            Gets the <see cref="T:Best.HTTP.HostSetting.HostVariant"/> associated with an HTTP request.
-            </summary>
-            <param name="request">The HTTP request.</param>
-            <returns>The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for the request's host.</returns>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostManager.GetHostVariant(Best.HTTP.Hosts.Connections.ConnectionBase)">
-            <summary>
-            Gets the <see cref="T:Best.HTTP.HostSetting.HostVariant"/> associated with a connection.
-            </summary>
-            <param name="connection">The HTTP connection.</param>
-            <returns>The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for the connection's host.</returns>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostManager.GetHostVariant(Best.HTTP.HostSetting.HostKey)">
-            <summary>
-            Gets the <see cref="T:Best.HTTP.HostSetting.HostVariant"/> associated with a HostKey.
-            </summary>
-            <param name="key">The HostKey for which to get the HostVariant.</param>
-            <returns>The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for the specified HostKey.</returns>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostManager.RemoveAllIdleConnections">
-            <summary>
-            Removes all idle connections for all hosts.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostManager.TryToSendQueuedRequests">
-            <summary>
-            Tries to send queued requests for all hosts.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostManager.Shutdown">
-            <summary>
-            Shuts down all connections for all hosts.
-            </summary>
-        </member>
-        <member name="M:Best.HTTP.HostSetting.HostManager.Clear">
-            <summary>
-            Clears all hosts and their associated variants.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.HostSetting.HostProtocolSupport">
-            <summary>
-            An enumeration representing the protocol support for a host.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.Unknown">
-            <summary>
-            Protocol support is unknown or undetermined.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.HTTP1">
-            <summary>
-            The host supports HTTP/1.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.HTTP2">
-            <summary>
-            The host supports HTTP/2.
-            </summary>
-        </member>
-        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.File">
-            <summary>
-            This is a file-based host.
-            </summary>
-        </member>
-        <member name="T:Best.HTTP.HostSetting.HostVariant">
-            <summary>
-            <para>The HostVariant class is a critical component in managing HTTP connections and handling HTTP requests for a specific host. It maintains a queue of requests and a list of active connections associated with the host, ensuring efficient utilization of available resources. Additionally, it supports protocol version detection (HTTP/1 or HTTP/2) for optimized communication with the host.</para>
-            <list type="bullet">
-                <item><description>It maintains a queue of requests to ensure efficient and controlled use of available connections.</description></item>
-                <item><description>It supports HTTP/1 and HTTP/2 protocol versions, allowing requests to be sent using the appropriate protocol based on the host's protocol support.</description></item>
-                <item><description>Provides methods for sending requests, recycling connections, managing connection state, and handling the shutdown of connections and the host variant itself.</description></item>
-                <item><description>It includes logging for diagnostic purposes, helping to monitor and debug the behavior of connections and requests.</description></item>
-            </list>
-            <para>In summary, the HostVariant class plays a central role in managing HTTP connections and requests for a specific host, ensuring efficient and reliable communication with that host while supporting different protocol versions.</para>
-            </summary>
-        </member>
         <member name="T:Best.HTTP.HTTPMethods">
             <summary>
             Represents the HTTP methods used in HTTP requests.
@@ -5170,6 +4566,610 @@
         <member name="F:Best.HTTP.HTTPRequestStates.TimedOut">
             <summary>
             The request didn't finished in the given time. The user defined callback will be called with a null response. The request’s Exception property will be null.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Connections.ConnectionBase">
+            <summary>
+            Abstract base class for concrete connection implementation (HTTP/1, HTTP/2, WebGL, File).
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.HostKey">
+            <summary>
+            The address of the server that this connection is bound to.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.State">
+            <summary>
+            The state of this connection.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.CurrentRequest">
+            <summary>
+            If the State is HTTPConnectionStates.Processing, then it holds a HTTPRequest instance. Otherwise it's null.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.KeepAliveTime">
+            <summary>
+            How much the connection kept alive after its last request processing.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.AssignedRequests">
+            <summary>
+            Number of assigned requests to process.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.MaxAssignedRequests">
+            <summary>
+            Maximum number of assignable requests.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.ConnectionBase.StartTime">
+            <summary>
+            When we start to process the current request. It's set after the connection is established.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Connections.ConnectionBase.Shutdown(Best.HTTP.Shared.ShutdownTypes)">
+            <summary>
+            Called when the plugin shuts down immediately.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Connections.KeepAliveHeader">
+            <summary>
+            https://tools.ietf.org/html/draft-thomson-hybi-http-timeout-03
+            Test servers: http://tools.ietf.org/ http://nginx.org/
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.KeepAliveHeader.TimeOut">
+            <summary>
+            A host sets the value of the "timeout" parameter to the time that the host will allow an idle connection to remain open before it is closed. A connection is idle if no data is sent or received by a host.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.KeepAliveHeader.MaxRequests">
+            <summary>
+            The "max" parameter has been used to indicate the maximum number of requests that would be made on the connection.This parameter is deprecated.Any limit on requests can be enforced by sending "Connection: close" and closing the connection.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Connections.ConnectionHelper">
+            <summary>
+            Static helper class to handle cases where the plugin has to do additional logic based on the received response. These are like connection management, handling redirections, loading from local cache, authentication challanges, etc.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Connections.ConnectionHelper.HandleResponse(Best.HTTP.HTTPRequest,System.Boolean@,Best.HTTP.Hosts.Connections.HTTPConnectionStates@,Best.HTTP.Hosts.Connections.KeepAliveHeader@,Best.HTTP.Shared.Logger.LoggingContext)">
+            <summary>
+            Called when the whole response received
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Connections.HTTP1.PeekableHTTP1Response">
+            <summary>
+            An HTTP 1.1 response implementation that can utilize a peekable stream.
+            Its main entry point is the ProcessPeekable method that should be called after every chunk of data downloaded.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Connections.HTTPConnectionStates">
+            <summary>
+            Possible states of a Http Connection.
+            The ideal lifecycle of a connection that has KeepAlive is the following: Initial => [Processing => WaitForRecycle => Free] => Closed.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Initial">
+            <summary>
+            This Connection instance is just created.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Processing">
+            <summary>
+            This Connection is processing a request
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.WaitForProtocolShutdown">
+            <summary>
+            Wait for the upgraded protocol to shut down.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Recycle">
+            <summary>
+            The Connection is finished processing the request, it's waiting now to deliver it's result.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Free">
+            <summary>
+            The request result's delivered, it's now up to processing again.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.Closed">
+            <summary>
+            If it's not a KeepAlive connection, or something happened, then we close this connection and remove from the pool.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Connections.HTTPConnectionStates.ClosedResendRequest">
+            <summary>
+            Same as the Closed state, but processing this request requires resending the last processed request too.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Connections.IDownloadContentBufferAvailable">
+            <summary>
+            Defines an interface for notifying connections when space becomes available in a buffer for downloading data.
+            Connections implementating of this interface are used to signal their internal logic that they can transfer data into the available buffer space.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Connections.IDownloadContentBufferAvailable.BufferAvailable(Best.HTTP.Response.DownloadContentStream)">
+            <summary>
+            Notifies a connection that space has become available in the buffer for downloading data.
+            When invoked, this method indicates to a connection that it can transfer additional data into the buffer for further processing.
+            </summary>
+            <param name="stream">The <see cref="T:Best.HTTP.Response.DownloadContentStream"/> instance associated with the buffer.</param>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Connections.IThreadSignaler">
+            <summary>
+            Interface for signaling upload threads.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.Hosts.Connections.IThreadSignaler.Context">
+            <summary>
+            A <see cref="T:Best.HTTP.Shared.Logger.LoggingContext"/> instance for debugging purposes.
+            </summary>
+            <remarks>
+            To help <see cref="T:Best.HTTP.Request.Upload.UploadStreamBase"/> implementors log in the IThreadSignaler's context,
+            the interface implementors must make their logging context accessible.
+            </remarks>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Connections.IThreadSignaler.SignalThread">
+            <summary>
+            Signals the associated thread to resume or wake up.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Connections.WebGL.WebGLXHRNativeInterface.XHR_SetTimeout(System.Int32,System.UInt32)">
+            <summary>
+            Is an unsigned long representing the number of milliseconds a request can take before automatically being terminated. A value of 0 (which is the default) means there is no timeout.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Settings.AsteriskStringComparer">
+            <summary>
+            Moves any added asterisk(*) to the end of the list.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Settings.HTTRequestSettings">
+            <summary>
+            Settings for HTTP requests.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HTTRequestSettings.ConnectTimeout">
+            <summary>
+            The timeout for establishing a connection.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HTTRequestSettings.RequestTimeout">
+            <summary>
+            The maximum time allowed for the request to complete.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings">
+            <summary>
+            Settings for HTTP/1 connections.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings.TryToReuseConnections">
+            <summary>
+            Indicates whether the connection should be open after receiving the response.
+            </summary>
+            <remarks>
+            If set to <c>true</c>, internal TCP connections will be reused whenever possible.
+            If making rare requests to the server, it's recommended to change this to <c>false</c>.
+            </remarks>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings.MaxConnectionIdleTime">
+            <summary>
+            The maximum time a connection can remain idle before being closed.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HTTP1ConnectionSettings.ForceUseThreadPool">
+            <summary>
+            Indicates whether the upload thread should use a <see href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool">ThreadPool</see> thread instead of creating and using a <see href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread">Thread</see>.
+            </summary>
+            <remarks>The plugin tries to use ThreadPool threads for known short-living uploads like requests without upload body. With <c>ForceUseThreadPool</c> all HTTP/1 requests, including long uploads or downloads can be forced to use ThreadPool threads.</remarks>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Settings.HostVariantSettings">
+            <summary>
+            Settings for <see cref="T:Best.HTTP.HostSetting.HostVariant"/>s.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.MaxConnectionPerVariant">
+            <summary>
+            The maximum number of connections allowed per host variant.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.MaxAssignedRequestsFactor">
+            <summary>
+            Factor used when calculations are made whether to open a new connection to the server or not.
+            </summary>
+            <remarks>
+            It has an effect on HTTP/2 connections only.
+            <para>Higher values (gte <c>1.0f</c>) delay, lower values (lte <c>1.0f</c>) bring forward creation of new connections.</para>
+            </remarks>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.VariantFactory">
+            <summary>
+            Factory function to generate HostVariant or descendent instances.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostVariantSettings.ConnectionFactory">
+            <summary>
+            Factory function to generate custom connection implementations.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Settings.LowLevelConnectionSettings">
+            <summary>
+            Represents the low-level TCP buffer settings for connections.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.LowLevelConnectionSettings.TCPWriteBufferSize">
+            <summary>
+            Gets or sets the size of the TCP write buffer in bytes. 
+            </summary>
+            <remarks>
+            <para>Default value is 1 MiB.</para>
+            <para>This determines the maximum amount of data that that the <see cref="!:TCPStreamer"/> class can buffer up if it's already in a write operation.
+            Increasing this value can potentially improve write performance, especially for large messages or data streams. 
+            However, setting it too high might consume a significant amount of memory, especially if there are many active connections.
+            </para>
+            </remarks>
+            <value>The size of the TCP write buffer in bytes.</value>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.LowLevelConnectionSettings.ReadBufferSize">
+            <summary>
+            Gets or sets the size of the read buffer in bytes. 
+            </summary>
+            <value>The size of the read buffer in bytes.</value>
+            <remarks>
+            <para>Default value is 1 MiB.</para>
+            <para>This determines the maximum amount of data that low level streams and the <see cref="!:TCPStreamer"/> can buffer up for consuming by higher level layers.
+            Adjusting this value can affect the read performance of the application. 
+            Like the write buffer, setting this too high might be memory-intensive, especially with many connections. 
+            It's advised to find a balance that suits the application's needs and resources.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Settings.HostSettings">
+            <summary>
+            Contains settings that can be associated with a specific host or host variant.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.LowLevelConnectionSettings">
+            <summary>
+            Gets or sets the low-level TCP buffer settings for connections associated with the host or host variant.
+            </summary>
+            <value>The low-level TCP buffer settings.</value>
+            <remarks>
+            These settings determine the buffer sizes for reading from and writing to TCP connections, 
+            which can impact performance and memory usage.
+            </remarks>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.RequestSettings">
+            <summary>
+            Settings related to HTTP requests made to this host or host variant.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.HTTP1ConnectionSettings">
+            <summary>
+            Settings related to HTTP/1.x connection behavior.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.Hosts.Settings.HostSettings.HostVariantSettings">
+            <summary>
+            Settings related to <see cref="T:Best.HTTP.HostSetting.HostVariant"/> behavior.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.Hosts.Settings.HostSettingsManager">
+            Host Settings Hierarchy for the following hosts, settings are stored as leafs:
+            
+            *.com
+            *.example.com
+            example.com
+            
+            '*' matches one or more subdomains so *.example.com 
+             - matches a.example.com and a.b.example.com
+             - but doesn't match example.com!
+            
+                                         
+                                          
+                               [com]                 [localhost]                [org]                      [*]
+                          +------+------+                 |                       |                         |
+                          |             |              [setting]                 [*]                     [setting]
+                    [example]          [*]                                        |
+                    /       \           |                                      [setting]
+                  [b]     [setting]  [setting]
+                   |
+                  [a]
+                   |
+                [setting]
+            
+            <summary>
+            Manages host-specific settings for HTTP requests based on hostnames.
+            The HostSettingsManager is a powerful tool for fine-tuning HTTP request and connection behaviors
+            on a per-host basis. It enables you to define custom settings for specific hostnames 
+            while maintaining default settings for all other hosts. This level of granularity allows you to
+            optimize and customize HTTP requests for different endpoints within your application.
+            </summary>
+            <remarks>
+            When host-specific settings are not found for a given host variant, the default <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/>
+            associated with the "*" host will be returned.
+            </remarks>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Best.HTTP.Hosts.Settings.HostSettingsManager"/> class with default settings for all hosts ("*").
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.AddDefault(System.Uri)">
+            <summary>
+            Adds default settings for the host part of the specified URI. This is equivalent to calling <see cref="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.Uri,Best.HTTP.Hosts.Settings.HostSettings)"/> with the a new <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/>.
+            </summary>
+            <param name="uri">The URI for which default settings should be applied. Only the host part of the URI will be used.</param>
+            <returns>A <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> instance with default values.</returns>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.AddDefault(System.String)">
+            <summary>
+            Adds default settings for the the specified host name. This is equivalent to calling <see cref="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.String,Best.HTTP.Hosts.Settings.HostSettings)"/> with the a new <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/>.
+            </summary>
+            <param name="hostname">The hostname for which default settings should be applied.</param>
+            <returns>A <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> instance with default values.</returns>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.Uri,Best.HTTP.Hosts.Settings.HostSettings)">
+            <summary>
+            Adds host-specific settings for the host part of the specified URI.
+            </summary>
+            <param name="uri">The URI for which settings should be applied. Only the host part of the URI will be used.</param>
+            <param name="settings">The <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> to apply.</param>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Add(System.String,Best.HTTP.Hosts.Settings.HostSettings)">
+            <summary>
+            Adds host-specific settings for the specified hostname.
+            </summary>
+            <param name="hostname">The hostname for which settings should be applied.</param>
+            <param name="settings">The <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> to apply.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when either the hostname or settings is null.</exception>
+            <exception cref="T:System.FormatException">Thrown when the hostname contains more than one asterisk ('*').</exception>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(Best.HTTP.HostSetting.HostVariant,System.Boolean)">
+            <summary>
+            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified <see cref="T:Best.HTTP.HostSetting.HostVariant"/>. Returns the default settings associated with "*" when not found.
+            </summary>
+            <param name="variant">The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for which settings should be retrieved. Only the host part of the variant will be used.</param>
+            <returns>The host settings for the specified host variant or the default settings for "*" if not found.</returns>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(Best.HTTP.HostSetting.HostKey,System.Boolean)">
+            <summary>
+            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified <see cref="T:Best.HTTP.HostSetting.HostKey"/>. Returns the default settings associated with "*" when not found.
+            </summary>
+            <param name="hostKey">The <see cref="T:Best.HTTP.HostSetting.HostKey"/> for which settings should be retrieved. Only the host part of the host key will be used.</param>
+            <returns>The host settings for the specified host key or the default settings for "*" if not found.</returns>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(System.Uri,System.Boolean)">
+            <summary>
+            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified <see cref="T:System.Uri"/>. Returns the default settings associated with "*" when not found.
+            </summary>
+            <param name="uri">The <see cref="T:System.Uri"/> for which settings should be retrieved. Only the host part of the URI will be used.</param>
+            <returns>The host settings for the specified URI or the default settings for "*" if not found.</returns>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Get(System.String,System.Boolean)">
+            <summary>
+            Gets <see cref="T:Best.HTTP.Hosts.Settings.HostSettings"/> for the host part of the specified hostname. Returns the default settings associated with "*" when not found.
+            </summary>
+            <param name="hostname">The hostname for which settings should be retrieved. Only the host part of the hostname will be used.</param>
+            <returns>The host settings for the specified hostname or the default settings for "*" if not found.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when the hostname is null.</exception>
+        </member>
+        <member name="M:Best.HTTP.Hosts.Settings.HostSettingsManager.Clear">
+            <summary>
+            Clears all host-specific settings and resetting the default ("*") with default values.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.HostSetting.HostKey">
+            <summary>
+            The <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct represents a unique key for identifying hosts based on their <see cref="T:System.Uri"/> and <see cref="T:Best.HTTP.Request.Settings.ProxySettings"/>.
+            </summary>
+            <remarks>
+            <para>
+            The <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct is designed to uniquely identify a host based on its URI (Uniform Resource Identifier) and optional proxy settings.
+            It provides a way to create, compare, and hash host keys, enabling efficient host variant management in the <see cref="T:Best.HTTP.HostSetting.HostManager"/>.
+            </para>
+            <para>
+            Key features of the <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct include:
+            </para>
+            <list type="bullet">
+                <item>
+                    <term>Uniqueness</term>
+                    <description>
+                    Each <see cref="T:Best.HTTP.HostSetting.HostKey"/> is guaranteed to be unique for a specific host, considering both the URI and proxy settings.
+                    </description>
+                </item>
+                <item>
+                    <term>Hashing</term>
+                    <description>
+                    The struct provides a method to calculate a hash code for a <see cref="T:Best.HTTP.HostSetting.HostKey"/>, making it suitable for use as a dictionary key.
+                    </description>
+                </item>
+                <item>
+                    <term>Creation</term>
+                    <description>
+                    You can create a <see cref="T:Best.HTTP.HostSetting.HostKey"/> instance from a <see cref="T:System.Uri"/> and optional <see cref="T:Best.HTTP.Request.Settings.ProxySettings"/>.
+                    </description>
+                </item>
+            </list>
+            <para>
+            Usage of the <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct is typically handled internally by the BestHTTP library to manage unique hosts and optimize resource usage.
+            Developers can use it when dealing with host-specific operations or customization of the library's behavior.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostKey.Uri">
+            <summary>
+            Gets the URI (Uniform Resource Identifier) associated with the host.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostKey.Proxy">
+            <summary>
+            Gets the proxy settings associated with the host.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostKey.Key">
+            <summary>
+            Gets the unique hash key for the host.
+            </summary>
+        </member>
+        <member name="P:Best.HTTP.HostSetting.HostKey.Host">
+            <summary>
+            Gets the host name from the URI or "file" if the URI is a file URI.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostKey.#ctor(System.Uri,Best.HTTP.Request.Settings.ProxySettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Best.HTTP.HostSetting.HostKey"/> struct with the specified URI and proxy settings.
+            </summary>
+            <param name="uri">The URI of the host.</param>
+            <param name="proxy">The proxy settings associated with the host, or <c>null</c> if no proxy is used.</param>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostKey.From(Best.HTTP.HTTPRequest)">
+            <summary>
+            Creates a <see cref="T:Best.HTTP.HostSetting.HostKey"/> instance from an HTTP request.
+            </summary>
+            <param name="request">The HTTP request from which to extract the current URI and proxy settings.</param>
+            <returns>A <see cref="T:Best.HTTP.HostSetting.HostKey"/> representing the host of the HTTP request.</returns>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostKey.From(System.Uri,Best.HTTP.Request.Settings.ProxySettings)">
+            <summary>
+            Creates a <see cref="T:Best.HTTP.HostSetting.HostKey"/> instance from a URI and proxy settings.
+            </summary>
+            <param name="uri">The URI of the host.</param>
+            <param name="proxy">The proxy settings associated with the host, or <c>null</c> if no proxy is used.</param>
+            <returns>A <see cref="T:Best.HTTP.HostSetting.HostKey"/> representing the host with the given URI and proxy settings.</returns>
+        </member>
+        <member name="T:Best.HTTP.HostSetting.HostManager">
+            <summary>
+            The <see cref="T:Best.HTTP.HostSetting.HostManager"/> class provides centralized management for <see cref="T:Best.HTTP.HostSetting.HostVariant"/> objects associated with HTTP requests and connections.
+            </summary>
+            <remarks>
+            <para>
+            The <see cref="T:Best.HTTP.HostSetting.HostManager"/> class acts as a central registry for managing <see cref="T:Best.HTTP.HostSetting.HostVariant"/> objects, each associated with a unique <see cref="T:Best.HTTP.HostSetting.HostKey"/>.
+            It facilitates the creation, retrieval, and management of <see cref="T:Best.HTTP.HostSetting.HostVariant"/> instances based on HTTP requests and connections.
+            </para>
+            <para>
+            A <see cref="T:Best.HTTP.HostSetting.HostVariant"/> represents a specific host and port combination (e.g., "http://example.com:80" or "https://example.com:443") and
+            manages the connections and request queues for that host. The class ensures that a single <see cref="T:Best.HTTP.HostSetting.HostVariant"/> instance is used for
+            each unique host, helping optimize resource usage and connection pooling.
+            </para>
+            <para>
+            Key features of the <see cref="T:Best.HTTP.HostSetting.HostManager"/> class include:
+            </para>
+            <list type="bullet">
+                <item>
+                    <term>Creation and Retrieval</term>
+                    <description>
+                    The class allows you to create and retrieve <see cref="T:Best.HTTP.HostSetting.HostVariant"/> instances based on HTTP requests, connections, or <see cref="T:Best.HTTP.HostSetting.HostKey"/>.
+                    It ensures that a single <see cref="T:Best.HTTP.HostSetting.HostVariant"/> is used for each unique host.
+                    </description>
+                </item>
+                <item>
+                    <term>Queue Management</term>
+                    <description>
+                    The <see cref="T:Best.HTTP.HostSetting.HostManager"/> manages the queue of pending requests for each <see cref="T:Best.HTTP.HostSetting.HostVariant"/>, ensuring efficient request processing.
+                    </description>
+                </item>
+                <item>
+                    <term>Connection Management</term>
+                    <description>
+                    The class handles the management of connections associated with <see cref="T:Best.HTTP.HostSetting.HostVariant"/> objects, including recycling idle connections,
+                    removing idle connections, and shutting down connections when needed.
+                    </description>
+                </item>
+            </list>
+            <para>
+            Usage of the <see cref="T:Best.HTTP.HostSetting.HostManager"/> class is typically transparent to developers and is handled internally by the Best HTTP library. However,
+            it provides a convenient and efficient way to manage connections and requests when needed.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostManager.hosts">
+            <summary>
+            Dictionary to store <see cref="T:Best.HTTP.HostSetting.HostKey"/>-<see cref="T:Best.HTTP.HostSetting.HostVariant"/> mappings.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostManager.GetHostVariant(Best.HTTP.HTTPRequest)">
+            <summary>
+            Gets the <see cref="T:Best.HTTP.HostSetting.HostVariant"/> associated with an HTTP request.
+            </summary>
+            <param name="request">The HTTP request.</param>
+            <returns>The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for the request's host.</returns>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostManager.GetHostVariant(Best.HTTP.Hosts.Connections.ConnectionBase)">
+            <summary>
+            Gets the <see cref="T:Best.HTTP.HostSetting.HostVariant"/> associated with a connection.
+            </summary>
+            <param name="connection">The HTTP connection.</param>
+            <returns>The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for the connection's host.</returns>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostManager.GetHostVariant(Best.HTTP.HostSetting.HostKey)">
+            <summary>
+            Gets the <see cref="T:Best.HTTP.HostSetting.HostVariant"/> associated with a HostKey.
+            </summary>
+            <param name="key">The HostKey for which to get the HostVariant.</param>
+            <returns>The <see cref="T:Best.HTTP.HostSetting.HostVariant"/> for the specified HostKey.</returns>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostManager.RemoveAllIdleConnections">
+            <summary>
+            Removes all idle connections for all hosts.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostManager.TryToSendQueuedRequests">
+            <summary>
+            Tries to send queued requests for all hosts.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostManager.Shutdown">
+            <summary>
+            Shuts down all connections for all hosts.
+            </summary>
+        </member>
+        <member name="M:Best.HTTP.HostSetting.HostManager.Clear">
+            <summary>
+            Clears all hosts and their associated variants.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.HostSetting.HostProtocolSupport">
+            <summary>
+            An enumeration representing the protocol support for a host.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.Unknown">
+            <summary>
+            Protocol support is unknown or undetermined.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.HTTP1">
+            <summary>
+            The host supports HTTP/1.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.HTTP2">
+            <summary>
+            The host supports HTTP/2.
+            </summary>
+        </member>
+        <member name="F:Best.HTTP.HostSetting.HostProtocolSupport.File">
+            <summary>
+            This is a file-based host.
+            </summary>
+        </member>
+        <member name="T:Best.HTTP.HostSetting.HostVariant">
+            <summary>
+            <para>The HostVariant class is a critical component in managing HTTP connections and handling HTTP requests for a specific host. It maintains a queue of requests and a list of active connections associated with the host, ensuring efficient utilization of available resources. Additionally, it supports protocol version detection (HTTP/1 or HTTP/2) for optimized communication with the host.</para>
+            <list type="bullet">
+                <item><description>It maintains a queue of requests to ensure efficient and controlled use of available connections.</description></item>
+                <item><description>It supports HTTP/1 and HTTP/2 protocol versions, allowing requests to be sent using the appropriate protocol based on the host's protocol support.</description></item>
+                <item><description>Provides methods for sending requests, recycling connections, managing connection state, and handling the shutdown of connections and the host variant itself.</description></item>
+                <item><description>It includes logging for diagnostic purposes, helping to monitor and debug the behavior of connections and requests.</description></item>
+            </list>
+            <para>In summary, the HostVariant class plays a central role in managing HTTP connections and requests for a specific host, ensuring efficient and reliable communication with that host while supporting different protocol versions.</para>
             </summary>
         </member>
         <member name="T:Best.HTTP.Proxies.ProxyConnectParameters">
@@ -7048,11 +7048,6 @@
         <member name="P:PlatformSupport.Collections.Specialized.NotifyCollectionChangedEventArgs.OldStartingIndex">
             <summary>
             The old index where the change occurred (for Move events).
-            </summary>
-        </member>
-        <member name="T:UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData">
-            <summary>
-            Data is UTF-8 encoded strings
             </summary>
         </member>
     </members>

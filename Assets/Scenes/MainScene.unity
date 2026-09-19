@@ -2988,7 +2988,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 243.85}
-  m_SizeDelta: {x: 421.23, y: 92.48}
+  m_SizeDelta: {x: 469.1, y: 92.48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &259797853
 MonoBehaviour:
@@ -3010,10 +3010,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Connection Error
+  m_text: connection lost
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
-  m_sharedMaterial: {fileID: -5364153340951941736, guid: 322cfd59b32d54bb3a1cb67f38902de4, type: 2}
+  m_sharedMaterial: {fileID: -118238800033536516, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3060,7 +3060,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -3079,7 +3079,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &259797854
@@ -11741,10 +11741,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reconnecting....
+  m_text: Trying to reconnect...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
-  m_sharedMaterial: {fileID: -5364153340951941736, guid: 322cfd59b32d54bb3a1cb67f38902de4, type: 2}
+  m_sharedMaterial: {fileID: -118238800033536516, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11791,7 +11791,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -11810,7 +11810,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1154314059
@@ -13070,10 +13070,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Connection Error
+  m_text: DISCONNECTED
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
-  m_sharedMaterial: {fileID: -5364153340951941736, guid: 322cfd59b32d54bb3a1cb67f38902de4, type: 2}
+  m_sharedMaterial: {fileID: -118238800033536516, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -13120,7 +13120,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -13139,7 +13139,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1285812993
@@ -18745,7 +18745,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 78}
+  m_AnchoredPosition: {x: 0, y: 70}
   m_SizeDelta: {x: 455.85, y: 134.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1726310610
@@ -18768,10 +18768,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Unable to connect to the server.
+  m_text: Please restart the game.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
-  m_sharedMaterial: {fileID: -5364153340951941736, guid: 322cfd59b32d54bb3a1cb67f38902de4, type: 2}
+  m_sharedMaterial: {fileID: -118238800033536516, guid: 230bc9f6a48dc4225877ed5730f2a284, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -18818,7 +18818,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -18837,7 +18837,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1726310611
